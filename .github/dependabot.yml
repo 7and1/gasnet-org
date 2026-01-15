@@ -1,0 +1,31 @@
+version: 2
+updates:
+  # Enable version updates for npm dependencies
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    # Group all dependencies into a single pull request
+    groups:
+      docusaurus-dependencies:
+        patterns:
+          - '@docusaurus/*'
+      production-dependencies:
+        patterns:
+          - '*'
+        exclude-patterns:
+          - '@docusaurus/*'
+    # Allow up to 10 open pull requests for version updates
+    open-pull-requests-limit: 10
+    # Raise pull requests for version updates
+    # against the default branch (main)
+    target-branch: 'main'
+    # Labels to add to pull requests
+    labels:
+      - 'dependencies'
+      - 'security'
+    # Commit message
+    commit-message:
+      prefix: 'chore(deps)'
+      include: 'scope'

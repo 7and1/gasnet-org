@@ -1,0 +1,21 @@
+{
+  "cluster": "Atlas-4096",
+  "fabric": "HDR 200",
+  "topology": "fat-tree",
+  "nodes": 4096,
+  "latency_us": [
+    { "size": "8B", "p50": 1.1, "p95": 1.6 },
+    { "size": "64B", "p50": 1.3, "p95": 1.9 },
+    { "size": "1KB", "p50": 2.0, "p95": 2.8 },
+    { "size": "8KB", "p50": 3.6, "p95": 4.7 },
+    { "size": "64KB", "p50": 8.1, "p95": 10.2 },
+    { "size": "1MB", "p50": 13.5, "p95": 17.4 }
+  ],
+  "bandwidth_gbps": [
+    { "size": "1KB", "gbps": 32 },
+    { "size": "8KB", "gbps": 88 },
+    { "size": "64KB", "gbps": 152 },
+    { "size": "1MB", "gbps": 185 },
+    { "size": "4MB", "gbps": 192 }
+  ]
+}

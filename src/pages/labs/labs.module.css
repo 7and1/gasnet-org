@@ -1,0 +1,176 @@
+.heroBanner {
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+  padding: 3rem 0;
+}
+
+.heroSubtitle {
+  max-width: 720px;
+  margin: 0 auto 2rem;
+}
+
+.section {
+  padding: 3.5rem 0;
+}
+
+.sectionAlt {
+  padding-top: 0;
+}
+
+.sectionTitle {
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.sectionLead {
+  max-width: 720px;
+  font-size: 1rem;
+  color: var(--ifm-color-emphasis-800);
+  margin-bottom: 2rem;
+}
+
+.areaGrid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin-top: 1.5rem;
+}
+
+.areaCard {
+  padding: 1.5rem;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.areaIcon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 194, 255, 0.12);
+  color: var(--ifm-color-primary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.areaName {
+  margin-bottom: 0;
+  font-size: 1.05rem;
+}
+
+.areaDescription {
+  color: var(--ifm-color-emphasis-700);
+  margin: 0;
+}
+
+.labGrid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-top: 1.5rem;
+}
+
+.labCard {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.labHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.labName {
+  margin-bottom: 0;
+  font-size: 1.1rem;
+  flex: 1;
+}
+
+.labRegion {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ifm-color-emphasis-600);
+  background: rgba(0, 194, 255, 0.1);
+  padding: 0.2rem 0.5rem;
+  white-space: nowrap;
+}
+
+.labInstitution {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.labFocus {
+  color: var(--ifm-color-emphasis-700);
+  margin: 0;
+}
+
+.labPublications {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pubTag {
+  font-size: 0.75rem;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.2rem 0.5rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.labLink {
+  margin-top: auto;
+}
+
+.submitCallout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: flex-start;
+  padding: 2rem;
+  border: 1px solid var(--ifm-toc-border-color);
+  background: rgba(0, 194, 255, 0.08);
+}
+
+.submitList {
+  margin: 1rem 0;
+  padding-left: 1.25rem;
+}
+
+.submitList li {
+  margin-bottom: 0.5rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+:global([data-theme='dark']) .areaIcon {
+  background: rgba(111, 232, 255, 0.15);
+}
+
+:global([data-theme='dark']) .pubTag {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme='dark']) .submitCallout {
+  background: rgba(79, 220, 255, 0.1);
+}
+
+@media (min-width: 768px) {
+  .submitCallout {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .submitList {
+    margin: 0 1rem 0 0;
+  }
+}

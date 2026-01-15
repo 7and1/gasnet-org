@@ -1,0 +1,8 @@
+{
+  "label": "Programming Model",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Communication primitives, collectives, API reference, and best practices for PGAS-style systems."
+  }
+}

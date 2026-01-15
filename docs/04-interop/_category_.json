@@ -1,0 +1,8 @@
+{
+  "label": "Interop",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Language bindings, runtime integration, and system-level interoperability."
+  }
+}

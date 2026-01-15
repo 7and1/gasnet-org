@@ -1,0 +1,13 @@
+# Gasnet.org robots.txt
+# Allow all crawlers
+
+User-agent: *
+Allow: /
+
+# Block search and tag pages from indexing
+Disallow: /search
+Disallow: /tags/
+Disallow: /category/
+
+# Sitemap reference
+Sitemap: https://gasnet.org/sitemap.xml

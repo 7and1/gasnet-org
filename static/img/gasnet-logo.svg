@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="64" viewBox="0 0 240 64" fill="none">
+  <rect width="240" height="64" fill="#0B0F16"/>
+  <circle cx="28" cy="32" r="10" fill="#00C2FF"/>
+  <circle cx="52" cy="18" r="4" fill="#6FE8FF"/>
+  <circle cx="52" cy="46" r="4" fill="#6FE8FF"/>
+  <path d="M28 22 L52 18 M28 42 L52 46" stroke="#00C2FF" stroke-width="2"/>
+  <text x="78" y="40" fill="#E6F6FF" font-size="24" font-family="Rajdhani, sans-serif" font-weight="700" letter-spacing="4">GASNET</text>
+</svg>
