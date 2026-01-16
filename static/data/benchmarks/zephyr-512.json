@@ -1,0 +1,21 @@
+{
+  "cluster": "Zephyr-512",
+  "fabric": "OFI TCP",
+  "topology": "leaf-spine",
+  "nodes": 512,
+  "latency_us": [
+    { "size": "8B", "p50": 3.2, "p95": 4.8 },
+    { "size": "64B", "p50": 3.8, "p95": 5.4 },
+    { "size": "1KB", "p50": 5.9, "p95": 8.1 },
+    { "size": "8KB", "p50": 9.4, "p95": 12.7 },
+    { "size": "64KB", "p50": 18.2, "p95": 24.0 },
+    { "size": "1MB", "p50": 32.0, "p95": 41.5 }
+  ],
+  "bandwidth_gbps": [
+    { "size": "1KB", "gbps": 6.5 },
+    { "size": "8KB", "gbps": 18.0 },
+    { "size": "64KB", "gbps": 32.0 },
+    { "size": "1MB", "gbps": 48.0 },
+    { "size": "4MB", "gbps": 55.0 }
+  ]
+}

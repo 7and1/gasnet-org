@@ -21,6 +21,8 @@ export const DARK_COLORS = Object.freeze({
   border: '#4db8cc',
   /** Secondary/accent color for dark mode (p95 latency) - contrast ratio 4.8:1 */
   accent: '#e5b030',
+  /** Multi-series palette for comparisons */
+  series: ['#4db8cc', '#e5b030', '#7dd3a8', '#7aa2f7', '#f59e0b', '#fb7185'],
 });
 
 /**
@@ -38,6 +40,8 @@ export const LIGHT_COLORS = Object.freeze({
   border: '#007aa3',
   /** Secondary/accent color for light mode (p95 latency) - contrast ratio 4.7:1 */
   accent: '#b07d00',
+  /** Multi-series palette for comparisons */
+  series: ['#007aa3', '#b07d00', '#1f7a4d', '#1d4ed8', '#b45309', '#9f1239'],
 });
 
 /**

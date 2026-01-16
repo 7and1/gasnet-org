@@ -2,6 +2,10 @@
 title: Quickstart Workflow
 description: A short checklist to launch an HPC networking investigation.
 slug: /getting-started/quickstart
+tags: [getting-started, workflow]
+related:
+  - /docs/benchmarks/microbenchmarks
+  - /docs/programming-model/communication-primitives
 sidebar_position: 3
 ---
 

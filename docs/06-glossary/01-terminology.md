@@ -2,6 +2,9 @@
 title: Terminology
 description: Comprehensive glossary of HPC networking, GASNet, and PGAS terminology.
 slug: /glossary/terminology
+tags: [glossary]
+related:
+  - /docs/getting-started/intro
 sidebar_position: 1
 ---
 

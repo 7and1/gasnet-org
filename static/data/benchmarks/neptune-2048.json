@@ -1,0 +1,21 @@
+{
+  "cluster": "Neptune-2048",
+  "fabric": "HDR 200",
+  "topology": "fat-tree",
+  "nodes": 2048,
+  "latency_us": [
+    { "size": "8B", "p50": 1.2, "p95": 1.7 },
+    { "size": "64B", "p50": 1.4, "p95": 2.0 },
+    { "size": "1KB", "p50": 2.2, "p95": 3.1 },
+    { "size": "8KB", "p50": 3.9, "p95": 5.1 },
+    { "size": "64KB", "p50": 8.8, "p95": 11.0 },
+    { "size": "1MB", "p50": 14.0, "p95": 18.2 }
+  ],
+  "bandwidth_gbps": [
+    { "size": "1KB", "gbps": 28 },
+    { "size": "8KB", "gbps": 84 },
+    { "size": "64KB", "gbps": 148 },
+    { "size": "1MB", "gbps": 182 },
+    { "size": "4MB", "gbps": 189 }
+  ]
+}

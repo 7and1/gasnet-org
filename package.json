@@ -20,6 +20,7 @@
     "format:check": "prettier --check \"**/*.{js,jsx,json,css,scss,md}\"",
     "prepare": "husky",
     "validate": "node scripts/check-links.js",
+    "validate:benchmarks": "node scripts/validate-benchmarks.js",
     "validate:build": "bash scripts/validate-build.sh",
     "deploy:vercel": "bash scripts/deploy-vercel.sh",
     "deploy:vps": "bash scripts/deploy-vps.sh"
@@ -27,6 +28,7 @@
   "dependencies": {
     "@docusaurus/core": "3.9.2",
     "@docusaurus/preset-classic": "3.9.2",
+    "@docusaurus/theme-live-codeblock": "3.9.2",
     "@docusaurus/theme-mermaid": "3.9.2",
     "@easyops-cn/docusaurus-search-local": "0.52.2",
     "@giscus/react": "3.1.0",
@@ -46,6 +48,8 @@
     "@docusaurus/module-type-aliases": "3.9.2",
     "@docusaurus/types": "3.9.2",
     "@eslint/js": "9.39.2",
+    "ajv": "8.17.1",
+    "ajv-formats": "3.0.1",
     "eslint": "9.39.2",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-jsx-a11y": "6.10.2",

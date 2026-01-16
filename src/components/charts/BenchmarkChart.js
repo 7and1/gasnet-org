@@ -5,7 +5,7 @@
  * @module charts/BenchmarkChart
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import { Bar } from 'react-chartjs-2';
 import { useChartTheme } from '../../hooks/useChartTheme';
@@ -38,6 +38,39 @@ function BenchmarkChartClient({ dataPath = '/benchmarks/default.json', height = 
   const chartTheme = useChartTheme();
   const { data, error, isLoading } = useChartData(dataPath);
 
+  const chartData = useMemo(() => {
+    if (!data) {
+      return { labels: [], datasets: [] };
+    }
+
+    if (data.labels && data.dataset) {
+      return {
+        labels: data.labels,
+        datasets: [createBarDataset(data.dataset.data, data.dataset.label, chartTheme)],
+      };
+    }
+
+    if (data.latency_us) {
+      const labels = data.latency_us.map(point => point.size);
+      const values = data.latency_us.map(point => point.p50 ?? point.value ?? 0);
+      const label = data.cluster ? `${data.cluster} latency (µs)` : 'Latency (µs)';
+      return {
+        labels,
+        datasets: [createBarDataset(values, label, chartTheme)],
+      };
+    }
+
+    return { labels: [], datasets: [] };
+  }, [data, chartTheme]);
+
+  const options = useMemo(
+    () =>
+      buildBaseChartOptions(chartTheme, {
+        tooltipFormat: TooltipFormats.microseconds,
+      }),
+    [chartTheme]
+  );
+
   if (error) {
     return (
       <div
@@ -55,15 +88,6 @@ function BenchmarkChartClient({ dataPath = '/benchmarks/default.json', height = 
   if (isLoading) {
     return <LoadingState message="Loading benchmark chart..." />;
   }
-
-  const chartData = {
-    labels: data.labels,
-    datasets: [createBarDataset(data.dataset.data, data.dataset.label, chartTheme)],
-  };
-
-  const options = buildBaseChartOptions(chartTheme, {
-    tooltipFormat: TooltipFormats.microseconds,
-  });
 
   // Accessibility: Generate description for screen readers
   const accessibleDescription = generateAccessibleDescription(chartData, 'Benchmark latency data');

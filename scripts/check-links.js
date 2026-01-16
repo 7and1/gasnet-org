@@ -11,6 +11,7 @@ const path = require('path');
 const DOCS_DIR = './docs';
 const BLOG_DIR = './blog';
 const BUILD_DIR = './build';
+const slugMap = new Map();
 
 // ANSI colors
 const colors = {
@@ -48,6 +49,22 @@ function extractLinks(content) {
   return links;
 }
 
+function extractFrontmatterSlug(content) {
+  const match = content.match(/^---\n([\s\S]*?)\n---/);
+  if (!match) return null;
+
+  const frontmatter = match[1];
+  const slugMatch = frontmatter.match(/^slug:\s*(.+)$/m);
+  if (!slugMatch) return null;
+
+  let slug = slugMatch[1].trim();
+  slug = slug.replace(/^['"]|['"]$/g, '');
+  if (!slug.startsWith('/')) {
+    slug = `/${slug}`;
+  }
+  return slug;
+}
+
 function isInternalLink(url) {
   return (
     url && !url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('mailto:')
@@ -64,14 +81,30 @@ function validateInternalLink(link, sourceFile) {
     if (fs.existsSync(docPath)) return { valid: true };
     if (fs.existsSync(docPath + '.md')) return { valid: true };
     if (fs.existsSync(path.join(docPath, 'index.md'))) return { valid: true };
+
+    const slugCandidate = link.replace(/^\/docs/, '').replace(/\/$/, '');
+    if (slugMap.has(slugCandidate)) return { valid: true };
     return { valid: false, path: docPath };
   }
 
   // Handle /labs route
-  if (link.startsWith('/labs')) {
-    const labsPath = path.join('src', 'pages', 'labs.js');
-    if (fs.existsSync(labsPath)) return { valid: true };
-    return { valid: false, path: labsPath };
+  if (link.startsWith('/')) {
+    const routePath = link.split('#')[0];
+    const pageBase = path.join('src', 'pages', routePath.replace(/^\//, ''));
+    const candidates = [
+      `${pageBase}.js`,
+      `${pageBase}.jsx`,
+      `${pageBase}.md`,
+      `${pageBase}.mdx`,
+      path.join(pageBase, 'index.js'),
+      path.join(pageBase, 'index.jsx'),
+      path.join(pageBase, 'index.md'),
+      path.join(pageBase, 'index.mdx'),
+    ];
+
+    if (candidates.some(candidate => fs.existsSync(candidate))) {
+      return { valid: true };
+    }
   }
 
   // Resolve relative path
@@ -113,6 +146,15 @@ async function main() {
   const markdownDirs = [DOCS_DIR, BLOG_DIR, 'src'];
   let totalLinks = 0;
   let invalidLinks = 0;
+
+  const docsFiles = findMarkdownFiles(DOCS_DIR);
+  docsFiles.forEach(file => {
+    const content = fs.readFileSync(file, 'utf-8');
+    const slug = extractFrontmatterSlug(content);
+    if (slug) {
+      slugMap.set(slug, file);
+    }
+  });
 
   for (const dir of markdownDirs) {
     if (!fs.existsSync(dir)) continue;

@@ -2,6 +2,10 @@
 title: What is GASNet?
 description: Understand the GASNet ecosystem and how this knowledge base is organized.
 slug: /getting-started/intro
+tags: [getting-started, overview]
+related:
+  - /docs/getting-started/quickstart
+  - /docs/architecture/overview
 sidebar_position: 1
 ---
 

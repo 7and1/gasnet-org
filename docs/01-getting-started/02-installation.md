@@ -2,6 +2,10 @@
 title: Environment Baseline
 description: Align hardware, OS, and tooling before benchmarking HPC interconnects.
 slug: /getting-started/environment-baseline
+tags: [getting-started, installation, environment]
+related:
+  - /docs/getting-started/troubleshooting
+  - /docs/benchmarks/microbenchmarks
 sidebar_position: 2
 ---
 
@@ -27,3 +31,68 @@ performance data stays reproducible.
 3. Record NIC firmware and driver settings in the lab notebook.
 
 When you later compare microbenchmarks, this baseline becomes the “control”.
+
+## Linux (Ubuntu/Debian)
+
+Install build essentials and common transports:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y build-essential cmake pkg-config \
+  libibverbs-dev librdmacm-dev libfabric-dev
+```
+
+Then configure GASNet with the transport you intend to test:
+
+```bash
+./configure --prefix=$HOME/gasnet-install \
+  --with-ofi --with-ucx
+make -j
+make install
+```
+
+## Linux (RHEL/Rocky/CentOS)
+
+```bash
+sudo dnf groupinstall -y \"Development Tools\"
+sudo dnf install -y rdma-core-devel libfabric-devel
+```
+
+If your cluster provides vendor OFED, record the exact driver version so you
+can reproduce the environment later.
+
+## macOS
+
+```bash
+brew install gasnet
+```
+
+For reproducible benchmarks, disable App Nap and ensure the system is on AC
+power to avoid frequency throttling.
+
+## HPC clusters (modules)
+
+Most centers deliver GASNet and transports as modules:
+
+```bash
+module purge
+module load gcc/12 openmpi/4.1 ucx/1.15
+module load gasnet
+```
+
+Capture the module list in your notes:
+
+```bash
+module list > gasnet-module-snapshot.txt
+```
+
+## Containers
+
+For containerized workflows, prefer Apptainer or Podman with host networking
+enabled. Bind-mount device files for RDMA:
+
+```bash
+apptainer exec --bind /dev/infiniband gasnet.sif ./microbenchmarks
+```
+
+Be explicit about CPU pinning inside the container to avoid noisy results.

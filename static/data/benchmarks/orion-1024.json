@@ -1,0 +1,21 @@
+{
+  "cluster": "Orion-1024",
+  "fabric": "Slingshot",
+  "topology": "fat-tree",
+  "nodes": 1024,
+  "latency_us": [
+    { "size": "8B", "p50": 0.8, "p95": 1.2 },
+    { "size": "64B", "p50": 1.0, "p95": 1.4 },
+    { "size": "1KB", "p50": 1.6, "p95": 2.2 },
+    { "size": "8KB", "p50": 2.9, "p95": 3.9 },
+    { "size": "64KB", "p50": 6.4, "p95": 8.5 },
+    { "size": "1MB", "p50": 11.0, "p95": 14.2 }
+  ],
+  "bandwidth_gbps": [
+    { "size": "1KB", "gbps": 44 },
+    { "size": "8KB", "gbps": 128 },
+    { "size": "64KB", "gbps": 192 },
+    { "size": "1MB", "gbps": 230 },
+    { "size": "4MB", "gbps": 238 }
+  ]
+}

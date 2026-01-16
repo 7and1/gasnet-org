@@ -1,0 +1,28 @@
+.hero {
+  padding: 4rem 0;
+}
+
+.subtitle {
+  max-width: 720px;
+}
+
+.sectionTitle {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.card {
+  border: 1px solid var(--ifm-toc-border-color);
+  background: rgba(0, 153, 204, 0.04);
+}
+
+.eventList {
+  margin: 0;
+  padding-left: 1.5rem;
+}

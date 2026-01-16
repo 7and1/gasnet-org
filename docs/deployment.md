@@ -1,4 +1,10 @@
-# Deployment Guide
+---
+title: Deployment Guide
+description: CI/CD setup and production deployment workflow for Gasnet.org.
+slug: /operations/deployment
+tags: [operations, deployment]
+sidebar_position: 92
+---
 
 This document describes the CI/CD setup and deployment process for the Gasnet.org Docusaurus site.
 

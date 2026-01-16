@@ -2,6 +2,10 @@
 title: Best Practices
 description: Performance optimization, common patterns, and production deployment tips.
 slug: /programming-model/best-practices
+tags: [programming-model, best-practices]
+related:
+  - /docs/benchmarks/microbenchmarks
+  - /docs/architecture/overview
 sidebar_position: 4
 ---
 

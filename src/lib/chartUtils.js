@@ -6,38 +6,10 @@
  * @module chartUtils
  */
 
-// Tree-shakeable Chart.js imports - only what we need
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  PointElement,
-  Tooltip,
-  Legend,
-  Filler,
-} from 'chart.js/auto';
-// import { getChartColors } from './colors'; // eslint-disable-line
+import './chartSetup';
 
-/**
- * Register Chart.js components. Should be called once during app initialization.
- */
-export function registerChartComponents() {
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    LineElement,
-    PointElement,
-    Tooltip,
-    Legend,
-    Filler
-  );
-}
-
-// Auto-register on import
-registerChartComponents();
+// Re-export for any consumers that need explicit registration.
+export { registerChartComponents } from './chartSetup';
 
 /**
  * Default tooltip callback formats.

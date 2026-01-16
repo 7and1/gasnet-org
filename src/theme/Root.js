@@ -3,9 +3,11 @@
  * Adds skip links for keyboard navigation and analytics.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useHistory } from '@docusaurus/router';
 import Root from '@theme-original/Root';
 import Analytics from '@site/src/components/Analytics';
+import ReadingProgress from '@site/src/components/ReadingProgress';
 
 // Polyfill for process.env in browser environments (Cloudflare Pages compatibility)
 if (typeof window === 'undefined') {
@@ -34,12 +36,65 @@ if (typeof window === 'undefined') {
 }
 
 export default function RootWrapper(props) {
+  const history = useHistory();
+
+  useEffect(() => {
+    const isEditableTarget = target => {
+      if (!target) return false;
+      const tagName = target.tagName;
+      return (
+        target.isContentEditable ||
+        tagName === 'INPUT' ||
+        tagName === 'TEXTAREA' ||
+        tagName === 'SELECT'
+      );
+    };
+
+    const focusSearch = () => {
+      const searchInput =
+        document.querySelector('input[type="search"]') ||
+        document.querySelector('.navbar__search input');
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.select();
+        return true;
+      }
+      return false;
+    };
+
+    const handler = event => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        if (isEditableTarget(event.target)) return;
+        event.preventDefault();
+        if (!focusSearch()) {
+          history.push('/search');
+        }
+        return;
+      }
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        if (isEditableTarget(event.target)) return;
+        const selector =
+          event.key === 'ArrowLeft' ? '.pagination-nav__link--prev' : '.pagination-nav__link--next';
+        const link = document.querySelector(selector);
+        if (link) {
+          event.preventDefault();
+          link.click();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [history]);
+
   return (
     <>
       {/* Accessibility: Skip to main content link for keyboard users */}
       <a href="#main" className="skip-to-content">
         Skip to main content
       </a>
+      <ReadingProgress />
       {/* Privacy-preserving analytics */}
       <Analytics />
       <Root {...props} />

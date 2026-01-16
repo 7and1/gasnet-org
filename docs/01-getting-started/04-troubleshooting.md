@@ -2,6 +2,10 @@
 title: Troubleshooting Guide
 description: Common GASNet errors, installation issues, and performance debugging.
 slug: /getting-started/troubleshooting
+tags: [getting-started, troubleshooting]
+related:
+  - /docs/getting-started/environment-baseline
+  - /docs/interop/runtime-integration
 sidebar_position: 4
 ---
 
@@ -195,6 +199,19 @@ lspci -vvv | grep -A 10 "Infiniband"
    ```bash
    export IBV_CQ_DEPTH=4096
    ```
+
+## Capture a debug bundle
+
+When issues persist, capture a minimal bundle for analysis:
+
+```bash
+export GASNET_VERBOSE=1
+export GASNET_BACKTRACE=1
+env | grep GASNET > gasnet-env.txt
+ibstat > ibstat.txt
+```
+
+Include the exact command line and job launcher output alongside these files.
 
 3. Verify MTU matches fabric:
    ```bash

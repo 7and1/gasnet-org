@@ -71,6 +71,22 @@ const config = {
         href: 'https://gasnet.org',
       },
     },
+    {
+      tagName: 'script',
+      attributes: { type: 'application/ld+json' },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'TechArticle',
+        headline: 'Gasnet.org HPC Networking Knowledge Base',
+        description:
+          'GASNet provides language-agnostic HPC networking infrastructure for real-world systems.',
+        author: { '@type': 'Organization', name: 'GASNet Team' },
+        publisher: { '@type': 'Organization', name: 'GASNet Team', url: 'https://gasnet.org' },
+        url: 'https://gasnet.org',
+        inLanguage: 'en',
+        dateModified: '2026-01-16',
+      }),
+    },
   ],
 
   // Set the production url of your site here
@@ -90,7 +106,11 @@ const config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: ['en', 'zh-CN'],
+    localeConfigs: {
+      en: { label: 'English' },
+      'zh-CN': { label: '简体中文' },
+    },
   },
 
   presets: [
@@ -101,6 +121,17 @@ const config = {
         docs: {
           sidebarPath: './sidebars.js',
           routeBasePath: '/docs',
+          lastVersion: 'current',
+          versions: {
+            current: {
+              label: '2.0 (Current)',
+              path: '',
+            },
+            '1.0': {
+              label: '1.0',
+              path: '1.0',
+            },
+          },
           editUrl: undefined,
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
@@ -122,6 +153,7 @@ const config = {
   },
   themes: [
     '@docusaurus/theme-mermaid',
+    '@docusaurus/theme-live-codeblock',
     [
       '@easyops-cn/docusaurus-search-local',
       {
@@ -217,11 +249,25 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
+          {
+            type: 'docsVersionDropdown',
+            position: 'left',
+          },
           { to: '/labs', label: 'Labs', position: 'left' },
+          { to: '/community', label: 'Community', position: 'left' },
           {
             to: '/docs/getting-started/intro',
             label: 'Start',
             position: 'left',
+          },
+          {
+            to: '/changelog',
+            label: 'Changelog',
+            position: 'left',
+          },
+          {
+            type: 'localeDropdown',
+            position: 'right',
           },
         ],
       },
@@ -268,11 +314,11 @@ const config = {
             items: [
               {
                 label: 'Accessibility',
-                to: '/docs/accessibility-statement',
+                to: '/docs/operations/accessibility',
               },
               {
                 label: 'Privacy',
-                to: '/docs/privacy',
+                to: '/docs/operations/privacy',
               },
             ],
           },
@@ -283,6 +329,9 @@ const config = {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
         additionalLanguages: ['rust', 'python', 'cpp'],
+      },
+      liveCodeBlock: {
+        playgroundPosition: 'bottom',
       },
     }),
 };

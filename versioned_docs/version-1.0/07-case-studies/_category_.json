@@ -1,0 +1,8 @@
+{
+  "label": "Case Studies",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "Field reports and tuning narratives for HPC networking stacks."
+  }
+}

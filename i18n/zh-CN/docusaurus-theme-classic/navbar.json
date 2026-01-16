@@ -1,0 +1,26 @@
+{
+  "title": {
+    "message": "Gasnet.org",
+    "description": "Navbar title"
+  },
+  "item.label.Docs": {
+    "message": "文档",
+    "description": "Navbar item label"
+  },
+  "item.label.Labs": {
+    "message": "实验室",
+    "description": "Navbar item label"
+  },
+  "item.label.Community": {
+    "message": "社区",
+    "description": "Navbar item label"
+  },
+  "item.label.Start": {
+    "message": "开始",
+    "description": "Navbar item label"
+  },
+  "item.label.Changelog": {
+    "message": "更新日志",
+    "description": "Navbar item label"
+  }
+}

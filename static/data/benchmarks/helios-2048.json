@@ -1,0 +1,21 @@
+{
+  "cluster": "Helios-2048",
+  "fabric": "HDR 200",
+  "topology": "dragonfly",
+  "nodes": 2048,
+  "latency_us": [
+    { "size": "8B", "p50": 1.0, "p95": 1.5 },
+    { "size": "64B", "p50": 1.2, "p95": 1.8 },
+    { "size": "1KB", "p50": 1.9, "p95": 2.7 },
+    { "size": "8KB", "p50": 3.4, "p95": 4.6 },
+    { "size": "64KB", "p50": 7.6, "p95": 9.9 },
+    { "size": "1MB", "p50": 12.8, "p95": 16.5 }
+  ],
+  "bandwidth_gbps": [
+    { "size": "1KB", "gbps": 30 },
+    { "size": "8KB", "gbps": 92 },
+    { "size": "64KB", "gbps": 158 },
+    { "size": "1MB", "gbps": 196 },
+    { "size": "4MB", "gbps": 205 }
+  ]
+}

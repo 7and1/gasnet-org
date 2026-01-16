@@ -2,6 +2,7 @@
 title: Features Demo
 description: Validate Mermaid, KaTeX, Chart.js, Search, and Giscus.
 slug: /features-demo
+tags: [demo, features]
 sidebar_position: 99
 ---
 

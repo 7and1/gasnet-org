@@ -1,4 +1,10 @@
-# Performance Optimizations
+---
+title: Performance Optimizations
+description: Performance optimizations applied to the Gasnet.org Docusaurus project.
+slug: /operations/performance
+tags: [operations, performance]
+sidebar_position: 93
+---
 
 This document summarizes all performance optimizations applied to the Gasnet.org Docusaurus project.
 

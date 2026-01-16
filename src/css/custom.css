@@ -247,6 +247,205 @@ body {
   }
 }
 
+/* Live code block styling */
+.react-live {
+  border: 1px solid rgba(0, 194, 255, 0.25);
+  box-shadow: 0 12px 24px rgba(0, 194, 255, 0.12);
+  margin: 1.5rem 0;
+}
+
+.react-live-preview {
+  padding: 1.25rem;
+  background: rgba(0, 194, 255, 0.06);
+  border-bottom: 1px solid rgba(0, 194, 255, 0.2);
+}
+
+.react-live-editor {
+  font-size: 0.85rem;
+}
+
+.react-live-error {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.12);
+  padding: 0.5rem 0.75rem;
+}
+
+/* Related docs */
+.related-docs {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border: 1px solid var(--ifm-toc-border-color);
+  background: rgba(0, 194, 255, 0.08);
+}
+
+.related-docs h4 {
+  margin-top: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+}
+
+/* API reference component */
+.api-reference {
+  border: 1px solid rgba(0, 194, 255, 0.2);
+  padding: 1.5rem;
+  background: rgba(0, 194, 255, 0.06);
+  margin: 1.5rem 0;
+}
+
+.api-reference pre {
+  background: rgba(11, 15, 22, 0.08);
+}
+
+/* PDF export button */
+.pdf-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--ifm-color-primary);
+  background: transparent;
+  color: var(--ifm-color-primary);
+  font-family: var(--ifm-font-family-base);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.pdf-export-btn:hover {
+  background: rgba(0, 194, 255, 0.1);
+}
+
+/* Code tabs */
+.code-tabs {
+  margin: 1.5rem 0;
+  border: 1px solid var(--ifm-toc-border-color);
+  background: rgba(0, 153, 204, 0.04);
+}
+
+.code-tabs__title {
+  padding: 0.75rem 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+.code-tabs .tabs {
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+/* Benchmark compare */
+.benchmark-compare {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border: 1px solid var(--ifm-toc-border-color);
+  background: rgba(0, 153, 204, 0.06);
+}
+
+.benchmark-compare__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.benchmark-compare__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 220px;
+}
+
+.benchmark-compare__label {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+
+.benchmark-compare__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.benchmark-compare__option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.benchmark-compare__select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--ifm-toc-border-color);
+  background: transparent;
+  color: inherit;
+  font-family: var(--ifm-font-family-base);
+}
+
+.benchmark-compare__hint {
+  font-size: 0.75rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.benchmark-compare__empty {
+  padding: 1rem;
+  border: 1px dashed var(--ifm-toc-border-color);
+  text-align: center;
+}
+
+.benchmark-compare__meta {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.benchmark-compare__meta-card {
+  border: 1px solid var(--ifm-toc-border-color);
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.benchmark-compare__meta-card ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.75rem 0 0;
+}
+
+.benchmark-compare__meta-card li {
+  margin-bottom: 0.4rem;
+}
+
+.benchmark-compare__meta-title {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.8rem;
+}
+
+/* Print styles for PDF export */
+@media print {
+  .navbar,
+  .footer,
+  .pagination-nav,
+  .table-of-contents,
+  .theme-doc-toc-desktop,
+  .theme-doc-toc-mobile {
+    display: none !important;
+  }
+  .markdown {
+    max-width: 100%;
+  }
+  pre {
+    white-space: pre-wrap;
+  }
+  .pdf-export-btn {
+    display: none !important;
+  }
+}
+
 /* Performance: Optimize rendering for off-screen content */
 .doc-sidebar-container,
 .pagination-nav,

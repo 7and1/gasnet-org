@@ -1,0 +1,31 @@
+{
+  "$schema": "./schema.json",
+  "metadata": {
+    "name": "Your Cluster Name",
+    "date": "2026-01-16",
+    "contributor": "GitHub Username",
+    "hardware": {
+      "nodes": 128,
+      "network": "HDR InfiniBand",
+      "cpu": "AMD EPYC 7763",
+      "accelerator": "NVIDIA H100",
+      "topology": "fat-tree"
+    }
+  },
+  "latency_us": [
+    { "size": "8B", "p50": 0.5, "p95": 0.8 },
+    { "size": "64B", "p50": 0.6, "p95": 1.0 },
+    { "size": "512B", "p50": 0.8, "p95": 1.5 },
+    { "size": "4KB", "p50": 1.2, "p95": 2.0 },
+    { "size": "32KB", "p50": 2.5, "p95": 4.0 }
+  ],
+  "bandwidth_gbps": [
+    { "size": "8B", "gbps": 0.01 },
+    { "size": "64B", "gbps": 0.1 },
+    { "size": "512B", "gbps": 0.8 },
+    { "size": "4KB", "gbps": 5.0 },
+    { "size": "32KB", "gbps": 15.0 },
+    { "size": "256KB", "gbps": 22.0 },
+    { "size": "1MB", "gbps": 24.0 }
+  ]
+}

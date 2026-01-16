@@ -1,4 +1,10 @@
-# Analytics Configuration
+---
+title: Analytics Configuration
+description: How Umami analytics is configured for Gasnet.org.
+slug: /operations/analytics
+tags: [operations, analytics, privacy]
+sidebar_position: 90
+---
 
 This document describes the analytics setup for Gasnet.org and how to manage it.
 
@@ -157,4 +163,4 @@ If you prefer an even simpler approach, consider:
 
 - [Umami Documentation](https://umami.is/docs)
 - [GDPR Compliance Guide](https://umami.is/docs/gdpr-compliance)
-- [Privacy Policy](/docs/privacy)
+- [Privacy Policy](/docs/operations/privacy)

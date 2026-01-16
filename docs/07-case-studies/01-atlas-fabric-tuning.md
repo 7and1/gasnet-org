@@ -1,6 +1,11 @@
 ---
 title: Atlas-4096 Fabric Tuning
 description: Reducing active message tail latency on a 4K-node HDR fabric.
+slug: /case-studies/atlas-fabric-tuning
+tags: [case-study, benchmarks, tuning]
+related:
+  - /docs/benchmarks/microbenchmarks
+  - /docs/benchmarks/topology-notes
 sidebar_position: 1
 ---
 
