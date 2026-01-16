@@ -4,15 +4,13 @@ import { useColorMode } from '@docusaurus/theme-common';
 import Giscus from '@giscus/react';
 import ErrorBoundary from './ErrorBoundary';
 
+// Giscus configuration - uses process.env (polyfilled in src/theme/Root.js)
 function GiscusComponentInner() {
   const { colorMode } = useColorMode();
-  // Environment variables for Giscus configuration
-  // Set these in .env.local or your deployment environment
-  // Get values from https://giscus.app
-  const GISCUS_REPO = process.env.GISCUS_REPO ?? null;
-  const GISCUS_REPO_ID = process.env.GISCUS_REPO_ID ?? null;
-  const GISCUS_CATEGORY = process.env.GISCUS_CATEGORY ?? 'General';
-  const GISCUS_CATEGORY_ID = process.env.GISCUS_CATEGORY_ID ?? null;
+  const GISCUS_REPO = process.env.GISCUS_REPO || null;
+  const GISCUS_REPO_ID = process.env.GISCUS_REPO_ID || null;
+  const GISCUS_CATEGORY = process.env.GISCUS_CATEGORY || 'General';
+  const GISCUS_CATEGORY_ID = process.env.GISCUS_CATEGORY_ID || null;
 
   const isConfigured = GISCUS_REPO && GISCUS_REPO_ID && GISCUS_CATEGORY_ID;
 

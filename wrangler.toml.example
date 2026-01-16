@@ -2,11 +2,6 @@
 # Copy this file to wrangler.toml and fill in your values
 # IMPORTANT: Never commit wrangler.toml to a public repository!
 
-# Your Cloudflare Account ID
-# Get it from: https://dash.cloudflare.com -> Workers & Pages -> Overview
-# Or use environment variable: CLOUDFLARE_ACCOUNT_ID
-account_id = "your-account-id-here"
-
 # Project name (will be used as: https://<project-name>.pages.dev)
 name = "gasnet-org"
 
@@ -16,18 +11,5 @@ compatibility_date = "2024-01-01"
 # Build output directory for Pages
 pages_build_output_dir = "build"
 
-# Pages configuration
-[env.production]
-routes = [
-  { pattern = "gasnet.org/*", zone_name = "gasnet.org" }
-]
-
-# Build configuration (for reference, actual build happens via npm)
-[build]
-command = "npm run build"
-cwd = "."
-watch_paths = ["**/*.md", "**/*.js", "**/*.jsx", "**/*.css"]
-
-# Environment variables (optional)
-[vars]
-NODE_ENV = "production"
+# NOTE: For Cloudflare Pages, use CLOUDFLARE_ACCOUNT_ID environment variable
+# Do NOT add account_id to this file - Pages projects don't support it

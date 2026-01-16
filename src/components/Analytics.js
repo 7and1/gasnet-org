@@ -9,11 +9,11 @@ import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 export default function Analytics() {
   useEffect(() => {
     // Only run in production and in browser
-    if (
-      !ExecutionEnvironment.canUseDOM ||
-      process.env.NODE_ENV !== 'production' ||
-      process.env.ANALYTICS_ENABLED !== 'true'
-    ) {
+    // process.env is polyfilled in src/theme/Root.js for Cloudflare Pages compatibility
+    const isProduction = process.env.NODE_ENV === 'production';
+    const analyticsEnabled = process.env.ANALYTICS_ENABLED === 'true';
+
+    if (!ExecutionEnvironment.canUseDOM || !isProduction || !analyticsEnabled) {
       return;
     }
 
@@ -30,7 +30,6 @@ export default function Analytics() {
 
     // Analytics script is already injected via docusaurus.config.js
     // This component can be extended for custom event tracking
-    const analyticsEnabled = true;
 
     // Log for debugging (production builds exclude console.log)
     if (analyticsEnabled) {
