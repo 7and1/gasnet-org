@@ -190,7 +190,7 @@ jobs:
           echo "$DEPLOY_OUTPUT"
 
           # Extract deployment URL from output
-          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://[a-zA-Z0-9.-]*\.pages\.dev/[a-zA-Z0-9.-]*' | head -1 || echo "https://gasnet.org")
+          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://[a-zA-Z0-9.-]+\.pages\.dev' | head -1 || echo "https://gasnet.org")
           echo "url=$DEPLOY_URL" >> $GITHUB_OUTPUT
           echo "Deployment URL: $DEPLOY_URL"
         env:
@@ -265,7 +265,7 @@ jobs:
           echo "$DEPLOY_OUTPUT"
 
           # Extract deployment URL from output
-          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://[a-zA-Z0-9.-]*\.pages\.dev/[a-zA-Z0-9.-]*' | head -1 || echo "https://gasnet.org")
+          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://[a-zA-Z0-9.-]+\.pages\.dev' | head -1 || echo "https://gasnet.org")
           echo "url=$DEPLOY_URL" >> $GITHUB_OUTPUT
           echo "Preview URL: $DEPLOY_URL"
         env:
