@@ -1,12 +1,12 @@
 /**
  * CaseStudyCharts component - displays latency and bandwidth charts for case studies.
+ * Uses lazy loading for Chart.js to reduce initial bundle size.
  *
  * @module charts/CaseStudyCharts
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, lazy, Suspense } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import { Bar, Line } from 'react-chartjs-2';
 import { useChartTheme } from '../../hooks/useChartTheme';
 import { useChartData } from '../../hooks/useChartData';
 import {
@@ -17,6 +17,10 @@ import {
 } from '../../lib/chartUtils';
 import LoadingState from '../ui/LoadingState';
 import ErrorBoundary from '../ErrorBoundary';
+
+// Lazy load Chart.js components for code splitting
+const Bar = lazy(() => import('react-chartjs-2').then(m => ({ default: m.Bar })));
+const Line = lazy(() => import('react-chartjs-2').then(m => ({ default: m.Line })));
 
 /**
  * Props for the CaseStudyCharts component.
@@ -102,10 +106,14 @@ function CaseStudyChartsClient({ dataPath = '/benchmarks/atlas-4096.json', chart
         role="region"
         aria-label="Latency distribution chart showing p50 and p95 latency across message sizes"
       >
-        <Line
-          data={latencyChart}
-          options={buildBaseChartOptions(chartTheme, { title: 'Latency distribution' })}
-        />
+        <Suspense
+          fallback={<LoadingState message="Loading latency chart..." height={chartHeight} />}
+        >
+          <Line
+            data={latencyChart}
+            options={buildBaseChartOptions(chartTheme, { title: 'Latency distribution' })}
+          />
+        </Suspense>
         <span
           className="sr-only"
           style={{
@@ -129,10 +137,14 @@ function CaseStudyChartsClient({ dataPath = '/benchmarks/atlas-4096.json', chart
         role="region"
         aria-label="Bandwidth scaling chart showing sustained bandwidth in GB/s"
       >
-        <Bar
-          data={bandwidthChart}
-          options={buildBaseChartOptions(chartTheme, { title: 'Bandwidth scaling' })}
-        />
+        <Suspense
+          fallback={<LoadingState message="Loading bandwidth chart..." height={chartHeight} />}
+        >
+          <Bar
+            data={bandwidthChart}
+            options={buildBaseChartOptions(chartTheme, { title: 'Bandwidth scaling' })}
+          />
+        </Suspense>
         <span
           className="sr-only"
           style={{
@@ -169,6 +181,43 @@ function CaseStudyChartsClient({ dataPath = '/benchmarks/atlas-4096.json', chart
 export default function CaseStudyCharts(props) {
   return (
     <ErrorBoundary>
+      <noscript>
+        <div className="noscript-chart-fallback">
+          <h4>Case Study Charts</h4>
+          <p>Interactive charts require JavaScript. Below is a summary of the benchmark data:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Message Size</th>
+                <th>Latency (p50/p95)</th>
+                <th>Bandwidth</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>8B</td>
+                <td>1.2 / 1.6 µs</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>1KB</td>
+                <td>2.1 / 2.8 µs</td>
+                <td>18 GB/s</td>
+              </tr>
+              <tr>
+                <td>64KB</td>
+                <td>8.6 / 10.4 µs</td>
+                <td>92 GB/s</td>
+              </tr>
+              <tr>
+                <td>1MB</td>
+                <td>14.2 / 18.0 µs</td>
+                <td>128 GB/s</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </noscript>
       <BrowserOnly fallback={<LoadingState message="Loading benchmark charts..." />}>
         {() => <CaseStudyChartsClient {...props} />}
       </BrowserOnly>

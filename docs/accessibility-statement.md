@@ -2,7 +2,7 @@
 sidebar_position: 94
 title: Accessibility Statement
 description: Accessibility commitment and support channels for Gasnet.org.
-slug: /operations/accessibility
+slug: /docs/accessibility-statement
 tags: [operations, accessibility]
 ---
 

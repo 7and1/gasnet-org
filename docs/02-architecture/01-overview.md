@@ -9,6 +9,24 @@ related:
 sidebar_position: 1
 ---
 
+import { BreadcrumbSchema, SEOHead } from '@site/src/components/SEOHead';
+
+<SEOHead
+ogType="article"
+articleSection="Architecture"
+articlePublishedTime="2026-01-01"
+articleModifiedTime="2026-01-16"
+articleAuthor="GASNet Team"
+keywords={['GASNet architecture', 'HPC architecture', 'data plane', 'control plane', 'RDMA', 'active messages', 'PGAS runtime', 'network architecture', 'InfiniBand']}
+/>
+
+<BreadcrumbSchema breadcrumbs={[
+{ name: 'Home', url: '/' },
+{ name: 'Docs', url: '/docs/' },
+{ name: 'Architecture', url: '/docs/architecture/' },
+{ name: 'Architecture Overview', url: '/docs/architecture/overview' }
+]} />
+
 A GASNet-style runtime decomposes into control and data paths that span both
 software and hardware.
 

@@ -11,6 +11,24 @@ sidebar_position: 2
 ---
 
 import CaseStudyCharts from '@site/src/components/charts/CaseStudyCharts';
+import { CaseStudySchema, SEOHead } from '@site/src/components/SEOHead';
+
+<SEOHead
+ogType="article"
+articleSection="Case Studies"
+articlePublishedTime="2026-01-01"
+articleModifiedTime="2026-01-16"
+articleAuthor="GASNet Team"
+keywords={['case study', 'adaptive routing', 'dragonfly', 'congestion control', 'ECN', 'HDR fabric', 'latency tuning', 'collectives']}
+/>
+
+<CaseStudySchema caseStudy={{
+  name: 'Helios-2048 Adaptive Routing Cutover',
+  description: 'Stabilizing tail latency on a 2,048-node HDR 200 dragonfly fabric through routing and congestion tuning. The runtime experienced intermittent p95 latency spikes during all-to-all collectives when multiple teams shared the same global links.',
+  about: 'HPC Network Routing',
+  datePublished: '2026-01-01',
+  dateModified: '2026-01-16'
+}} />
 
 Helios-2048 is a 2,048-node system on an HDR 200 dragonfly fabric. The runtime
 experienced intermittent p95 latency spikes during all-to-all collectives when

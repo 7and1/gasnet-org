@@ -1,13 +1,97 @@
 # Gasnet.org robots.txt
-# Allow all crawlers
+# Last updated: 2026-01-17
 
+# Allow all crawlers by default
 User-agent: *
 Allow: /
 
-# Block search and tag pages from indexing
+# Crawl-delay to prevent server overload (optional, recommended for aggressive bots)
+# Crawl-delay: 1
+
+# Block search and tag pages from indexing (no content value)
 Disallow: /search
 Disallow: /tags/
 Disallow: /category/
 
-# Sitemap reference
+# Disallow legacy version from indexing (prefer current version)
+# Allow: /docs/1.0/  # Comment out to allow legacy version indexing
+
+# Block admin and API routes if they exist
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+# Disallow development/build artifacts
+Disallow: /__/
+
+# Block parameter-based URLs (prevent duplicate content)
+Disallow: /*?*
+Disallow: /*&*
+
+# Specific rules for major search engines
+
+# Googlebot
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Googlebot-Image
+User-agent: Googlebot-Image
+Allow: /static/img/
+Disallow: /
+
+# Bingbot
+User-agent: bingbot
+Allow: /
+Crawl-delay: 1
+
+# Slurp (Yahoo)
+User-agent: Slurp
+Allow: /
+Crawl-delay: 3
+
+# DuckDuckBot
+User-agent: DuckDuckBot
+Allow: /
+
+# Baidu
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 5
+
+# Yandex
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 3
+
+# Facebook (for link previews)
+User-agent: facebookexternalhit
+Allow: /
+
+# Twitter (for card previews)
+User-agent: Twitterbot
+Allow: /
+
+# LinkedIn (for link previews)
+User-agent: LinkedInBot
+Allow: /
+
+# Block aggressive/undesirable bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Sitemap references
 Sitemap: https://gasnet.org/sitemap.xml
+
+# Additional sitemaps (if using split sitemaps)
+# Sitemap: https://gasnet.org/sitemap-docs.xml
+# Sitemap: https://gasnet.org/sitemap-blog.xml

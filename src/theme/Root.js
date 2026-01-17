@@ -9,30 +9,45 @@ import Root from '@theme-original/Root';
 import Analytics from '@site/src/components/Analytics';
 import ReadingProgress from '@site/src/components/ReadingProgress';
 
+// Build-time environment constants (injected by webpack DefinePlugin)
+// These are replaced at build time - no runtime values are exposed
+// Use typeof check on global scope to avoid TDZ errors
+const _ANALYTICS_ENABLED =
+  typeof globalThis.ANALYTICS_ENABLED !== 'undefined' ? globalThis.ANALYTICS_ENABLED : 'false';
+const _GISCUS_REPO = typeof globalThis.GISCUS_REPO !== 'undefined' ? globalThis.GISCUS_REPO : '';
+const _GISCUS_REPO_ID =
+  typeof globalThis.GISCUS_REPO_ID !== 'undefined' ? globalThis.GISCUS_REPO_ID : '';
+const _GISCUS_CATEGORY =
+  typeof globalThis.GISCUS_CATEGORY !== 'undefined' ? globalThis.GISCUS_CATEGORY : 'General';
+const _GISCUS_CATEGORY_ID =
+  typeof globalThis.GISCUS_CATEGORY_ID !== 'undefined' ? globalThis.GISCUS_CATEGORY_ID : '';
+
 // Polyfill for process.env in browser environments (Cloudflare Pages compatibility)
 if (typeof window === 'undefined') {
   // Server-side - use real process.env
   global.process = { env: {} };
 } else {
-  // Client-side - polyfill process.env with build-time values
+  // Client-side - polyfill process.env with build-time values only
+  // Security: No runtime defaults that expose patterns
   window.process = window.process || { env: {} };
   window.process.env = window.process.env || {};
 
-  // Set default values (can be overridden by webpack DefinePlugin at build time)
-  window.process.env.NODE_ENV = window.process.env.NODE_ENV || 'production';
-  window.process.env.ANALYTICS_ENABLED = window.process.env.ANALYTICS_ENABLED || 'false';
-  window.process.env.GISCUS_REPO = window.process.env.GISCUS_REPO || '';
-  window.process.env.GISCUS_REPO_ID = window.process.env.GISCUS_REPO_ID || '';
-  window.process.env.GISCUS_CATEGORY = window.process.env.GISCUS_CATEGORY || 'General';
-  window.process.env.GISCUS_CATEGORY_ID = window.process.env.GISCUS_CATEGORY_ID || '';
+  // Only set values if they exist (build-time injection)
+  // Empty strings mean "not configured", not defaults
+  if (_ANALYTICS_ENABLED) window.process.env.ANALYTICS_ENABLED = _ANALYTICS_ENABLED;
+  if (_GISCUS_REPO) window.process.env.GISCUS_REPO = _GISCUS_REPO;
+  if (_GISCUS_REPO_ID) window.process.env.GISCUS_REPO_ID = _GISCUS_REPO_ID;
+  if (_GISCUS_CATEGORY) window.process.env.GISCUS_CATEGORY = _GISCUS_CATEGORY;
+  if (_GISCUS_CATEGORY_ID) window.process.env.GISCUS_CATEGORY_ID = _GISCUS_CATEGORY_ID;
 
-  // Also define as globals for compatibility
-  window.NODE_ENV = window.process.env.NODE_ENV;
-  window.ANALYTICS_ENABLED = window.process.env.ANALYTICS_ENABLED;
-  window.GISCUS_REPO = window.process.env.GISCUS_REPO;
-  window.GISCUS_REPO_ID = window.process.env.GISCUS_REPO_ID;
-  window.GISCUS_CATEGORY = window.process.env.GISCUS_CATEGORY;
-  window.GISCUS_CATEGORY_ID = window.process.env.GISCUS_CATEGORY_ID;
+  // Also define as globals for compatibility (build-time only)
+  if (typeof window.ANALYTICS_ENABLED === 'undefined')
+    window.ANALYTICS_ENABLED = _ANALYTICS_ENABLED;
+  if (typeof window.GISCUS_REPO === 'undefined') window.GISCUS_REPO = _GISCUS_REPO;
+  if (typeof window.GISCUS_REPO_ID === 'undefined') window.GISCUS_REPO_ID = _GISCUS_REPO_ID;
+  if (typeof window.GISCUS_CATEGORY === 'undefined') window.GISCUS_CATEGORY = _GISCUS_CATEGORY;
+  if (typeof window.GISCUS_CATEGORY_ID === 'undefined')
+    window.GISCUS_CATEGORY_ID = _GISCUS_CATEGORY_ID;
 }
 
 export default function RootWrapper(props) {

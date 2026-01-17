@@ -47,6 +47,11 @@ jobs:
         run: npm ci
 
       - name: Build site
+        env:
+          GISCUS_REPO: ${{ secrets.GISCUS_REPO }}
+          GISCUS_REPO_ID: ${{ secrets.GISCUS_REPO_ID }}
+          GISCUS_CATEGORY: ${{ secrets.GISCUS_CATEGORY || 'General' }}
+          GISCUS_CATEGORY_ID: ${{ secrets.GISCUS_CATEGORY_ID }}
         run: npm run build
 
       - name: Upload build artifacts
@@ -55,6 +60,42 @@ jobs:
           name: build
           path: build/
           retention-days: 7
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Run component tests
+        run: npm run test:component
+
+      - name: Run validation tests
+        run: npm run test:validation
+
+      - name: Run accessibility tests
+        run: npm run test:a11y
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
 
   test-links:
     name: Test Links
@@ -108,8 +149,57 @@ jobs:
 
       - name: Calculate bundle size
         run: |
-          echo "Bundle Size Report:"
-          du -sh build/
-          echo ""
-          echo "Largest files:"
-          find build -type f -exec du -h {} + | sort -rh | head -20
+          echo "## Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "Total size:" >> $GITHUB_STEP_SUMMARY
+          du -sh build/ >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Largest files:" >> $GITHUB_STEP_SUMMARY
+          find build -type f -exec du -h {} + | sort -rh | head -20 >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Check bundle size budgets
+        run: |
+          # Bundle size limits (in bytes)
+          MAIN_BUNDLE_LIMIT=204800  # 200KB
+          CHUNK_LIMIT=102400        # 100KB
+          CHART_CHUNK_LIMIT=153600  # 150KB
+
+          echo "## Bundle Size Budget Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size | Limit | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|-------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          # Check main JavaScript bundles
+          for file in build/js/*.js; do
+            if [ -f "$file" ]; then
+              size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null)
+              filename=$(basename "$file")
+              limit=$MAIN_BUNDLE_LIMIT
+
+              # Adjust limit for known chunks
+              if [[ "$filename" =~ "chart" ]]; then
+                limit=$CHART_CHUNK_LIMIT
+              elif [[ "$filename" =~ "chunk" ]]; then
+                limit=$CHUNK_LIMIT
+              fi
+
+              if [ "$size" -gt "$limit" ]; then
+                echo "| $filename | $size bytes | $limit bytes | FAIL |" >> $GITHUB_STEP_SUMMARY
+                echo "::error::Bundle $filename exceeds size limit: $size > $limit"
+                FAILED=1
+              else
+                echo "| $filename | $size bytes | $limit bytes | PASS |" >> $GITHUB_STEP_SUMMARY
+              fi
+            fi
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "$FAILED" = "1" ]; then
+            echo "::error::Bundle size limits exceeded. See summary for details."
+            exit 1
+          fi
+
+          echo "All bundles within size limits."

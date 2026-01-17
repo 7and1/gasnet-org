@@ -1,7 +1,7 @@
 ---
 title: Privacy Policy
 description: How Gasnet.org handles data and protects visitor privacy.
-slug: /operations/privacy
+slug: /docs/privacy
 tags: [operations, privacy]
 sidebar_position: 91
 ---

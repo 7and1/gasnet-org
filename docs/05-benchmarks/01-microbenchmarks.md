@@ -10,6 +10,23 @@ sidebar_position: 1
 ---
 
 import BenchmarkCompare from '@site/src/components/charts/BenchmarkCompare';
+import { BreadcrumbSchema, SEOHead } from '@site/src/components/SEOHead';
+
+<SEOHead
+ogType="article"
+articleSection="Benchmarks"
+articlePublishedTime="2026-01-01"
+articleModifiedTime="2026-01-16"
+articleAuthor="GASNet Team"
+keywords={['microbenchmarks', 'latency', 'bandwidth', 'HPC benchmarks', 'performance measurement', 'network testing', 'RDMA benchmarks', 'InfiniBand testing']}
+/>
+
+<BreadcrumbSchema breadcrumbs={[
+{ name: 'Home', url: '/' },
+{ name: 'Docs', url: '/docs/' },
+{ name: 'Benchmarks', url: '/docs/benchmarks/' },
+{ name: 'Microbenchmarks', url: '/docs/benchmarks/microbenchmarks' }
+]} />
 
 Microbenchmarks should isolate a single variable at a time.
 

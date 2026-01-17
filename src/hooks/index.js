@@ -6,4 +6,4 @@
 
 export { default as useChartTheme } from './useChartTheme';
 export { useChartTheme as default } from './useChartTheme';
-export { useChartData } from './useChartData';
+export { useChartData, clearChartDataCache } from './useChartData';

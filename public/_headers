@@ -1,0 +1,26 @@
+# Cloudflare Pages security headers for gasnet.org
+# See https://developers.cloudflare.com/pages/configuration/headers/
+
+# Content Security Policy - strict whitelist for all external resources
+# Allows: Google Fonts, KaTeX CDN, Giscus, Umami Analytics
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; img-src 'self' https: data: https://avatars.githubusercontent.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://giscus.app https://analytics.gasnet.org; frame-src https://giscus.app; frame-ancestors 'none'; form-action 'self'; base-uri 'self'; manifest-src 'self'
+
+# Prevent MIME type sniffing
+  X-Content-Type-Options: nosniff
+
+# Prevent clickjacking
+  X-Frame-Options: DENY
+
+# Referrer policy - don't leak full URLs in Referer header
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Disable unnecessary browser features
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=(), interest-cohort=()
+
+# Force HTTPS for 1 year
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+# Cross-origin policies
+  Cross-Origin-Resource-Policy: same-origin
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp

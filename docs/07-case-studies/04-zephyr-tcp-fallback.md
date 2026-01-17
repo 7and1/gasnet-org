@@ -11,6 +11,24 @@ sidebar_position: 4
 ---
 
 import CaseStudyCharts from '@site/src/components/charts/CaseStudyCharts';
+import { CaseStudySchema, SEOHead } from '@site/src/components/SEOHead';
+
+<SEOHead
+ogType="article"
+articleSection="Case Studies"
+articlePublishedTime="2026-01-01"
+articleModifiedTime="2026-01-16"
+articleAuthor="GASNet Team"
+keywords={['case study', 'OFI', 'Libfabric', 'TCP fallback', 'reliability', 'transport failure', 'RDMA', 'Ethernet']}
+/>
+
+<CaseStudySchema caseStudy={{
+  name: 'Zephyr-512 OFI TCP Fallback Stabilization',
+  description: 'Trading bandwidth for reliability when RDMA fabrics are unstable. Zephyr-512 faced intermittent RDMA transport failures during peak usage. The team opted to validate a TCP fallback path to keep workflows running while hardware diagnostics were underway.',
+  about: 'HPC Transport Reliability',
+  datePublished: '2026-01-01',
+  dateModified: '2026-01-16'
+}} />
 
 Zephyr-512 faced intermittent RDMA transport failures during peak usage. The
 team opted to validate a TCP fallback path to keep workflows running while

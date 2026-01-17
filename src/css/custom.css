@@ -1,6 +1,7 @@
 /**
  * Global styling for Gasnet.org
  * WCAG AA compliant color contrast ratios
+ * Performance: font-display: swap prevents FOIT and allows immediate text rendering
  */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap');
@@ -476,4 +477,62 @@ img {
 /* Performance: Smooth scrolling for anchor links */
 html {
   scroll-behavior: smooth;
+}
+
+/* Performance: Noscript fallback styles */
+.noscript-chart-fallback {
+  padding: 1.5rem;
+  border: 1px solid var(--ifm-toc-border-color);
+  background: rgba(0, 153, 204, 0.04);
+  margin: 1rem 0;
+}
+
+.noscript-chart-fallback h4 {
+  margin-top: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ifm-color-primary);
+}
+
+.noscript-chart-fallback table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.noscript-chart-fallback th,
+.noscript-chart-fallback td {
+  border: 1px solid var(--ifm-toc-border-color);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.noscript-chart-fallback th {
+  background: rgba(0, 153, 204, 0.1);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+}
+
+.noscript-chart-fallback tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='dark'] .noscript-chart-fallback tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.client-only-noscript {
+  padding: 1.5rem;
+  border: 1px dashed var(--ifm-color-danger);
+  background: rgba(255, 107, 107, 0.1);
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.client-only-noscript p {
+  margin: 0;
+  color: var(--ifm-color-danger);
 }

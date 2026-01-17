@@ -10,6 +10,23 @@ sidebar_position: 3
 ---
 
 import APIReference from '@site/src/components/APIReference';
+import { BreadcrumbSchema, SEOHead } from '@site/src/components/SEOHead';
+
+<SEOHead
+ogType="article"
+articleSection="Programming Model"
+articlePublishedTime="2026-01-01"
+articleModifiedTime="2026-01-16"
+articleAuthor="GASNet Team"
+keywords={['GASNet API', 'GASNet-EX', 'API reference', 'PGAS API', 'one-sided communication', 'RMA', 'active messages', 'gasnet_init', 'gasnet_put', 'gasnet_get', 'HPC programming']}
+/>
+
+<BreadcrumbSchema breadcrumbs={[
+{ name: 'Home', url: '/' },
+{ name: 'Docs', url: '/docs/' },
+{ name: 'Programming Model', url: '/docs/programming-model/' },
+{ name: 'API Reference', url: '/docs/programming-model/api-reference' }
+]} />
 
 This reference covers the core GASNet-EX API functions used in PGAS runtime development.
 Use it as a quick lookup for signatures, parameters, and expected behavior.

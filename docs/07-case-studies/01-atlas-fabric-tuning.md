@@ -10,6 +10,24 @@ sidebar_position: 1
 ---
 
 import CaseStudyCharts from '@site/src/components/charts/CaseStudyCharts';
+import { CaseStudySchema, SEOHead } from '@site/src/components/SEOHead';
+
+<SEOHead
+ogType="article"
+articleSection="Case Studies"
+articlePublishedTime="2026-01-01"
+articleModifiedTime="2026-01-16"
+articleAuthor="GASNet Team"
+keywords={['case study', 'HPC tuning', 'HDR fabric', 'RDMA', 'latency optimization', 'InfiniBand', 'active messages']}
+/>
+
+<CaseStudySchema caseStudy={{
+  name: 'Atlas-4096 Fabric Tuning',
+  description: 'This case study documents a tuning cycle for an HDR 200 fabric connecting 4,096 nodes. The objective was to reduce active message tail latency while preserving bandwidth at larger message sizes.',
+  about: 'HPC Network Tuning',
+  datePublished: '2026-01-01',
+  dateModified: '2026-01-16'
+}} />
 
 This case study documents a tuning cycle for an HDR 200 fabric connecting 4,096
 nodes. The objective was to reduce active message tail latency while preserving

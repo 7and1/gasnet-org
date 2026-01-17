@@ -41,7 +41,16 @@ Thumbs.db
 *.secret
 secrets/
 .env.backup
-wrangler.toml
+# Ignore wrangler.toml if it contains account_id/secrets, but allow example
+# wrangler.toml
+*.env
+!wrangler.toml.example
+!.env.example
+*.credentials
+credentials.json
+auth.json
+.token
+.tokens
 
 # Deploy artifacts
 .vercel

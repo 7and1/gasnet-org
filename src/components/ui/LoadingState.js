@@ -16,6 +16,7 @@ import styles from './LoadingState.module.css';
  * @param {string} props.message - Custom loading message
  * @param {string} props.className - Additional CSS classes
  * @param {boolean} props.compact - Use compact variant with smaller spacing
+ * @param {number} props.height - Container height for charts
  * @returns {JSX.Element}
  *
  * @example
@@ -24,9 +25,16 @@ import styles from './LoadingState.module.css';
  * <LoadingState compact />
  * ```
  */
-export default function LoadingState({ message = 'Loading...', className, compact = false }) {
+export default function LoadingState({
+  message = 'Loading...',
+  className,
+  compact = false,
+  height,
+}) {
+  const style = height ? { height } : undefined;
+
   return (
-    <div className={clsx(styles.container, compact && styles.compact, className)}>
+    <div className={clsx(styles.container, compact && styles.compact, className)} style={style}>
       <div className={styles.spinner} aria-hidden="true" />
       <span className={styles.message}>{message}</span>
     </div>

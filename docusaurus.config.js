@@ -7,12 +7,57 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import {
+  schemaToHeadTag,
+  createWebSiteSchema,
+  createOrganizationSchema,
+  createTechArticleSchema,
+} from './src/utils/schema.js';
 
 // Analytics configuration - disabled in development
 const isDevelopment = process.env.NODE_ENV === 'development';
 const analyticsEnabled = process.env.ANALYTICS_ENABLED === 'true' && !isDevelopment;
 const analyticsWebsiteId = process.env.ANALYTICS_WEBSITE_ID || '';
 const analyticsHost = process.env.ANALYTICS_HOST || 'https://analytics.gasnet.org';
+
+// Build-time environment injection for client-side code
+// Note: Docusaurus 3.x doesn't support custom webpack config via docusaurus.config.js
+// Environment variables are handled through standard build process
+// See src/theme/Root.js for client-side polyfill
+
+// Sitemap priority configuration
+// Custom priority mapping for SEO optimization (reserved for future use)
+const _sitemapPriorityMap = new Map([
+  // High priority (1.0) - Getting Started and key entry points
+  ['/docs/getting-started/intro', { priority: 1.0, changefreq: 'weekly' }],
+  ['/docs/getting-started/quickstart', { priority: 1.0, changefreq: 'weekly' }],
+  ['/docs/programming-model/api-reference', { priority: 1.0, changefreq: 'weekly' }],
+  // High priority (0.9) - Core architecture and programming
+  ['/docs/programming-model/communication-primitives', { priority: 0.9, changefreq: 'weekly' }],
+  ['/docs/architecture/overview', { priority: 0.9, changefreq: 'weekly' }],
+  ['/docs/benchmarks/microbenchmarks', { priority: 0.9, changefreq: 'weekly' }],
+  // Medium-high priority (0.8) - Important setup and reference docs
+  ['/docs/getting-started/installation', { priority: 0.8, changefreq: 'monthly' }],
+  ['/docs/getting-started/troubleshooting', { priority: 0.8, changefreq: 'monthly' }],
+  ['/docs/architecture/transport-layers', { priority: 0.8, changefreq: 'monthly' }],
+  ['/docs/programming-model/collectives', { priority: 0.8, changefreq: 'monthly' }],
+  ['/faq', { priority: 0.8, changefreq: 'monthly' }],
+  // Medium priority (0.7) - Case studies and interop
+  ['/docs/programming-model/best-practices', { priority: 0.7, changefreq: 'monthly' }],
+  ['/docs/interop/language-bindings', { priority: 0.7, changefreq: 'monthly' }],
+  ['/docs/interop/runtime-integration', { priority: 0.7, changefreq: 'monthly' }],
+  ['/docs/benchmarks/topology-notes', { priority: 0.7, changefreq: 'monthly' }],
+  ['/docs/case-studies/atlas-fabric-tuning', { priority: 0.7, changefreq: 'monthly' }],
+  ['/docs/case-studies/helios-routing-cutover', { priority: 0.7, changefreq: 'monthly' }],
+  ['/docs/case-studies/orion-gpu-rdma', { priority: 0.7, changefreq: 'monthly' }],
+  ['/docs/case-studies/zephyr-tcp-fallback', { priority: 0.7, changefreq: 'monthly' }],
+  // Lower priority (0.3-0.5) - Supporting content
+  ['/docs/glossary/terminology', { priority: 0.4, changefreq: 'monthly' }],
+  ['/docs/accessibility-statement', { priority: 0.3, changefreq: 'yearly' }],
+  ['/docs/privacy', { priority: 0.3, changefreq: 'yearly' }],
+  // Legacy version gets lower priority
+  ['/docs/1.0/', { priority: 0.3, changefreq: 'yearly' }],
+]);
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -25,6 +70,25 @@ const config = {
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
+  },
+
+  // Canonical URLs for SEO
+  trailingSlash: false,
+  url: 'https://gasnet.org',
+  baseUrl: '/',
+
+  // Used for metadata and default project links.
+  organizationName: 'gasnet',
+  projectName: 'gasnet.org',
+
+  onBrokenLinks: 'warn',
+
+  // Even if you don't use internationalization, you can use this field to set
+  // useful metadata like html lang. For example, if your site is Chinese, you
+  // may want to replace "en" with "zh-Hans".
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en'],
   },
 
   // Performance optimization: Preconnect to external origins
@@ -55,6 +119,24 @@ const config = {
         crossorigin: 'anonymous',
       },
     },
+    // Preload critical fonts with async loading for performance
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preload',
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap',
+        as: 'style',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap',
+        media: 'print',
+        onload: "this.media='all'",
+      },
+    },
     // Preconnect to KaTeX CDN
     {
       tagName: 'link',
@@ -71,47 +153,78 @@ const config = {
         href: 'https://gasnet.org',
       },
     },
+    // Canonical URL for homepage
     {
-      tagName: 'script',
-      attributes: { type: 'application/ld+json' },
-      innerHTML: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'TechArticle',
+      tagName: 'link',
+      attributes: {
+        rel: 'canonical',
+        href: 'https://gasnet.org/',
+      },
+    },
+    // Alternative language link
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'alternate',
+        hreflang: 'en',
+        href: 'https://gasnet.org/',
+      },
+    },
+    // WebSite Schema
+    schemaToHeadTag(createWebSiteSchema()),
+    // Organization Schema
+    schemaToHeadTag(createOrganizationSchema()),
+    // TechArticle Schema for main content
+    schemaToHeadTag(
+      createTechArticleSchema({
         headline: 'Gasnet.org HPC Networking Knowledge Base',
         description:
           'GASNet provides language-agnostic HPC networking infrastructure for real-world systems.',
-        author: { '@type': 'Organization', name: 'GASNet Team' },
-        publisher: { '@type': 'Organization', name: 'GASNet Team', url: 'https://gasnet.org' },
-        url: 'https://gasnet.org',
-        inLanguage: 'en',
-        dateModified: '2026-01-16',
-      }),
+        url: '/',
+        keywords: [
+          'GASNet',
+          'HPC',
+          'high-performance computing',
+          'RDMA',
+          'PGAS',
+          'interconnects',
+          'supercomputing',
+          'parallel programming',
+          'InfiniBand',
+          'active messages',
+        ],
+      })
+    ),
+    // Additional article meta tags
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'article:published_time',
+        content: '2026-01-01',
+      },
+    },
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'article:modified_time',
+        content: new Date().toISOString().split('T')[0],
+      },
+    },
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'article:author',
+        content: 'GASNet Team',
+      },
+    },
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'article:section',
+        content: 'Technical Documentation',
+      },
     },
   ],
-
-  // Set the production url of your site here
-  url: 'https://gasnet.org',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
-
-  // Used for metadata and default project links.
-  organizationName: 'gasnet',
-  projectName: 'gasnet.org',
-
-  onBrokenLinks: 'throw',
-
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
-  i18n: {
-    defaultLocale: 'en',
-    locales: ['en', 'zh-CN'],
-    localeConfigs: {
-      en: { label: 'English' },
-      'zh-CN': { label: '简体中文' },
-    },
-  },
 
   presets: [
     [
@@ -140,7 +253,7 @@ const config = {
         sitemap: {
           changefreq: 'weekly',
           priority: 0.7,
-          ignorePatterns: ['/tags/**'],
+          ignorePatterns: ['/tags/**', '/search/**'],
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -183,7 +296,7 @@ const config = {
         {
           name: 'keywords',
           content:
-            'GASNet, HPC, high-performance computing, RDMA, PGAS, interconnects, supercomputing, parallel programming',
+            'GASNet, HPC, high-performance computing, RDMA, PGAS, interconnects, supercomputing, parallel programming, InfiniBand, active messages, PGAS runtime, one-sided communication, remote memory access',
         },
         { name: 'theme-color', content: '#0099cc' },
         {
@@ -195,6 +308,9 @@ const config = {
         { name: 'robots', content: 'index, follow, max-image-preview:large' },
         // Performance hints
         { name: 'format-detection', content: 'telephone=no' },
+        // Geographic targeting
+        { name: 'geo.region', content: 'US' },
+        { name: 'geo.placename', content: 'Global' },
         // Open Graph tags
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'Gasnet.org' },
@@ -213,8 +329,12 @@ const config = {
         },
         { property: 'og:image:width', content: '1200' },
         { property: 'og:image:height', content: '630' },
+        { property: 'og:image:type', content: 'image/svg+xml' },
         { property: 'og:image:alt', content: 'Gasnet.org Social Card' },
         { property: 'og:url', content: 'https://gasnet.org' },
+        { property: 'og:locale', content: 'en_US' },
+        { property: 'article:author', content: 'GASNet Team' },
+        { property: 'article:publisher', content: 'https://gasnet.org' },
         // Twitter Card tags
         { name: 'twitter:card', content: 'summary_large_image' },
         {
@@ -231,6 +351,8 @@ const config = {
           content: 'https://gasnet.org/img/gasnet-social-card.svg',
         },
         { name: 'twitter:image:alt', content: 'Gasnet.org Social Card' },
+        { name: 'twitter:site', content: '@gasnet' },
+        { name: 'twitter:creator', content: '@gasnet' },
       ],
       colorMode: {
         defaultMode: 'light',
@@ -264,10 +386,6 @@ const config = {
             to: '/changelog',
             label: 'Changelog',
             position: 'left',
-          },
-          {
-            type: 'localeDropdown',
-            position: 'right',
           },
         ],
       },
@@ -314,11 +432,11 @@ const config = {
             items: [
               {
                 label: 'Accessibility',
-                to: '/docs/operations/accessibility',
+                to: '/docs/accessibility-statement',
               },
               {
                 label: 'Privacy',
-                to: '/docs/operations/privacy',
+                to: '/docs/privacy',
               },
             ],
           },

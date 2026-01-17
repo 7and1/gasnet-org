@@ -1,0 +1,326 @@
+# =============================================================================
+# Cloudflare Pages Deployment Workflow
+# =============================================================================
+#
+# Triggers:
+#   - Push to main branch (production deployment)
+#   - Pull requests (preview deployments)
+#   - Manual workflow_dispatch
+#
+# Required GitHub Secrets:
+#   - CLOUDFLARE_API_TOKEN: Cloudflare API token with Pages edit permissions
+#   - CLOUDFLARE_ACCOUNT_ID: Your Cloudflare account ID
+#
+# Optional GitHub Secrets:
+#   - GISCUS_REPO: GitHub repository for comments (e.g., "org/repo")
+#   - GISCUS_REPO_ID: Giscus repository ID from giscus.app
+#   - GISCUS_CATEGORY: Discussion category (default: "General")
+#   - GISCUS_CATEGORY_ID: Giscus category ID
+#
+# Environment Variables (auto-provided):
+#   - GITHUB_TOKEN: Automatically provided by GitHub Actions
+#
+# =============================================================================
+
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - preview
+
+permissions:
+  contents: read
+  deployments: write
+  pull-requests: write
+
+jobs:
+  # =============================================================================
+  # Secret Validation Job
+  # =============================================================================
+  validate-secrets:
+    name: Validate Secrets
+    runs-on: ubuntu-latest
+    outputs:
+      api-token-set: ${{ steps.check-secrets.outputs.api-token-set }}
+      account-id-set: ${{ steps.check-secrets.outputs.account-id-set }}
+    steps:
+      - name: Check required secrets
+        id: check-secrets
+        run: |
+          if [ -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
+            echo "api-token-set=true" >> $GITHUB_OUTPUT
+            echo "::notice::CLOUDFLARE_API_TOKEN is set"
+          else
+            echo "api-token-set=false" >> $GITHUB_OUTPUT
+            echo "::error::CLOUDFLARE_API_TOKEN is not set. Please add it to repository secrets."
+          fi
+
+          if [ -n "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "account-id-set=true" >> $GITHUB_OUTPUT
+            echo "::notice::CLOUDFLARE_ACCOUNT_ID is set"
+          else
+            echo "account-id-set=false" >> $GITHUB_OUTPUT
+            echo "::error::CLOUDFLARE_ACCOUNT_ID is not set. Please add it to repository secrets."
+          fi
+
+  # =============================================================================
+  # Quality Gates Job (Lint + Type Check + Validate)
+  # =============================================================================
+  quality:
+    name: Quality Gates
+    runs-on: ubuntu-latest
+    needs: validate-secrets
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check Prettier formatting
+        run: npm run format:check
+
+      - name: Validate internal links
+        run: npm run validate
+
+      - name: Validate benchmark datasets
+        run: npm run validate:benchmarks
+
+  # =============================================================================
+  # Build Job
+  # =============================================================================
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        env:
+          # Pass Giscus environment variables if available
+          GISCUS_REPO: ${{ secrets.GISCUS_REPO }}
+          GISCUS_REPO_ID: ${{ secrets.GISCUS_REPO_ID }}
+          GISCUS_CATEGORY: ${{ secrets.GISCUS_CATEGORY || 'General' }}
+          GISCUS_CATEGORY_ID: ${{ secrets.GISCUS_CATEGORY_ID }}
+        run: npm run build
+
+      - name: Calculate bundle size
+        run: |
+          echo "## Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "Total size:" >> $GITHUB_STEP_SUMMARY
+          du -sh build/ >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Largest files:" >> $GITHUB_STEP_SUMMARY
+          find build -type f -exec du -h {} + | sort -rh | head -20 >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ github.sha }}
+          path: build/
+          retention-days: 7
+
+  # =============================================================================
+  # Production Deployment Job (main branch only)
+  # =============================================================================
+  deploy-production:
+    name: Deploy Production
+    runs-on: ubuntu-latest
+    needs: [validate-secrets, build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ github.sha }}
+          path: build/
+
+      - name: Install Wrangler
+        run: npm install -g wrangler
+
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        run: |
+          DEPLOY_OUTPUT=$(wrangler pages deploy build \
+            --project-name=gasnet-org \
+            --branch=main \
+            2>&1)
+          echo "$DEPLOY_OUTPUT"
+
+          # Extract deployment URL from output
+          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://[a-zA-Z0-9.-]*\.pages\.dev/[a-zA-Z0-9.-]*' | head -1 || echo "https://gasnet.org")
+          echo "url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+          echo "Deployment URL: $DEPLOY_URL"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Smoke test deployment
+        run: |
+          DEPLOY_URL=${{ steps.deploy.outputs.url }}
+          echo "Running smoke tests against $DEPLOY_URL"
+
+          # Wait a moment for deployment to propagate
+          sleep 5
+
+          # Test homepage
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL" || echo "000")
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "::error::Homepage returned status $HTTP_STATUS"
+            exit 1
+          fi
+          echo "::notice::Homepage OK (200)"
+
+          # Test sitemap
+          SITEMAP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL/sitemap.xml" || echo "000")
+          if [ "$SITEMAP_STATUS" != "200" ]; then
+            echo "::warning::Sitemap returned status $SITEMAP_STATUS"
+          else
+            echo "::notice::Sitemap OK (200)"
+          fi
+
+      - name: Create deployment summary
+        run: |
+          echo "## Production Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment URL:** ${{ steps.deploy.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+
+  # =============================================================================
+  # Preview Deployment Job (PRs only)
+  # =============================================================================
+  deploy-preview:
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    needs: [validate-secrets, build]
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'preview')
+    environment:
+      name: preview
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ github.sha }}
+          path: build/
+
+      - name: Install Wrangler
+        run: npm install -g wrangler
+
+      - name: Deploy preview to Cloudflare Pages
+        id: deploy
+        run: |
+          PREVIEW_BRANCH="pr-${{ github.event.pull_request.number }}"
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            PREVIEW_BRANCH="preview-${{ github.run_id }}"
+          fi
+
+          DEPLOY_OUTPUT=$(wrangler pages deploy build \
+            --project-name=gasnet-org \
+            --branch="$PREVIEW_BRANCH" \
+            2>&1)
+          echo "$DEPLOY_OUTPUT"
+
+          # Extract deployment URL from output
+          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://[a-zA-Z0-9.-]*\.pages\.dev/[a-zA-Z0-9.-]*' | head -1 || echo "https://gasnet.org")
+          echo "url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+          echo "Preview URL: $DEPLOY_URL"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Comment PR with preview URL
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const previewUrl = '${{ steps.deploy.outputs.url }}';
+            const comment = `## Preview Deployment Ready!
+
+            | Environment | URL |
+            |------------|-----|
+            | Preview | ${previewUrl} |
+
+            This preview will be automatically updated when new commits are pushed to this PR.
+
+            <details>
+            <summary>Rollback Instructions</summary>
+
+            To rollback to a previous deployment:
+            1. Go to Cloudflare Dashboard > Pages > gasnet-org
+            2. Navigate to Deployments
+            3. Find the previous deployment and click "Promote to production"
+            </details>`;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(c => c.user.type === 'Bot' && c.body.includes('Preview Deployment Ready'));
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+      - name: Create deployment summary
+        run: |
+          echo "## Preview Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Preview URL:** ${{ steps.deploy.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Pull Request:** #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY

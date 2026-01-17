@@ -16,3 +16,7 @@ export { InlineLoading } from './ui/LoadingState';
 export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as GiscusComponent } from './GiscusComponent';
 export { default as CodeTabs } from './CodeTabs';
+
+// Client wrapper components
+export { withClientOnly, withChartLoading, createTableFallback } from './client/ClientOnly';
+export { default as ClientOnly } from './client/ClientOnly';

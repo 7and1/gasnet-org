@@ -1,14 +1,14 @@
 /**
  * BenchmarkCompare component - compare multiple benchmark datasets.
  * Provides metric switching and dataset selection.
+ * Uses lazy loading for Chart.js to reduce initial bundle size.
  *
  * @module charts/BenchmarkCompare
  */
 
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, lazy, Suspense } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import useBaseUrl from '@docusaurus/useBaseUrl';
-import { Line } from 'react-chartjs-2';
 import { useChartTheme } from '../../hooks/useChartTheme';
 import {
   buildBaseChartOptions,
@@ -18,6 +18,10 @@ import {
 } from '../../lib/chartUtils';
 import LoadingState from '../ui/LoadingState';
 import ErrorBoundary from '../ErrorBoundary';
+import { validateBenchmarkData } from '../../lib/validateJson';
+
+// Lazy load Chart.js components for code splitting
+const Line = lazy(() => import('react-chartjs-2').then(m => ({ default: m.Line })));
 
 const DATASET_DEFS = [
   {
@@ -137,13 +141,33 @@ function BenchmarkCompareClient({ height = 360 }) {
         const results = await Promise.all(
           datasetUrls.map(async definition => {
             const response = await fetch(definition.url, { signal: controller.signal });
+
+            // Validate content size before parsing (ReDoS prevention)
+            const contentLength = response.headers.get('content-length');
+            if (contentLength) {
+              const size = parseInt(contentLength, 10);
+              const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+              if (size > MAX_SIZE) {
+                throw new Error(`Dataset ${definition.label} exceeds maximum size (${size} bytes)`);
+              }
+            }
+
             if (!response.ok) {
               throw new Error(
                 `Failed to load ${definition.label} (${response.status}: ${response.statusText})`
               );
             }
             const json = await response.json();
-            return [definition.id, json];
+
+            // Validate data structure before using (security)
+            const validationResult = validateBenchmarkData(json);
+            if (!validationResult.valid) {
+              throw new Error(
+                `Invalid data in ${definition.label}: ${validationResult.errors.join(', ')}`
+              );
+            }
+
+            return [definition.id, validationResult.data];
           })
         );
 
@@ -302,7 +326,9 @@ function BenchmarkCompareClient({ height = 360 }) {
           role="region"
           aria-label="Benchmark comparison chart"
         >
-          <Line data={chartData} options={options} aria-label={accessibleDescription} />
+          <Suspense fallback={<LoadingState message="Loading chart..." height={height} />}>
+            <Line data={chartData} options={options} aria-label={accessibleDescription} />
+          </Suspense>
           <span className="sr-only">{accessibleDescription}</span>
         </div>
       )}
@@ -343,6 +369,12 @@ function BenchmarkCompareClient({ height = 360 }) {
 export default function BenchmarkCompare(props) {
   return (
     <ErrorBoundary>
+      <noscript>
+        <div className="noscript-chart-fallback">
+          <h4>Benchmark Comparison</h4>
+          <p>Interactive comparison requires JavaScript. Select datasets and metrics above.</p>
+        </div>
+      </noscript>
       <BrowserOnly fallback={<LoadingState message="Loading benchmark comparison..." />}>
         {() => <BenchmarkCompareClient {...props} />}
       </BrowserOnly>

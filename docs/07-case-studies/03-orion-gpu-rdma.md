@@ -11,6 +11,24 @@ sidebar_position: 3
 ---
 
 import CaseStudyCharts from '@site/src/components/charts/CaseStudyCharts';
+import { CaseStudySchema, SEOHead } from '@site/src/components/SEOHead';
+
+<SEOHead
+ogType="article"
+articleSection="Case Studies"
+articlePublishedTime="2026-01-01"
+articleModifiedTime="2026-01-16"
+articleAuthor="GASNet Team"
+keywords={['case study', 'GPU Direct', 'GPUDirect', 'RDMA', 'CUDA', 'accelerator', 'Slingshot', 'bandwidth optimization']}
+/>
+
+<CaseStudySchema caseStudy={{
+  name: 'Orion-1024 GPU Direct RDMA Enablement',
+  description: 'Removing staging overhead to improve bandwidth for accelerator workflows. Orion-1024 runs accelerator-heavy workloads where GPU buffers dominate the data path. The initial configuration relied on host staging, creating extra copies and limiting bandwidth.',
+  about: 'GPU RDMA Optimization',
+  datePublished: '2026-01-01',
+  dateModified: '2026-01-16'
+}} />
 
 Orion-1024 runs accelerator-heavy workloads where GPU buffers dominate the data
 path. The initial configuration relied on host staging, creating extra copies

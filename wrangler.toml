@@ -1,0 +1,7 @@
+# Cloudflare Pages configuration
+# Note: Pages projects use CLOUDFLARE_ACCOUNT_ID environment variable
+# Do not put account_id in this file for Pages projects
+
+name = "gasnet-org"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "build"

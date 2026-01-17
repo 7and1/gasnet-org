@@ -9,6 +9,24 @@ related:
 sidebar_position: 1
 ---
 
+import { BreadcrumbSchema, SEOHead } from '@site/src/components/SEOHead';
+
+<SEOHead
+ogType="article"
+articleSection="Getting Started"
+articlePublishedTime="2026-01-01"
+articleModifiedTime="2026-01-16"
+articleAuthor="GASNet Team"
+keywords={['GASNet', 'PGAS', 'HPC networking', 'Global Address Space Networking', 'one-sided communication', 'RDMA', 'supercomputing', 'parallel programming', 'distributed memory']}
+/>
+
+<BreadcrumbSchema breadcrumbs={[
+{ name: 'Home', url: '/' },
+{ name: 'Docs', url: '/docs/' },
+{ name: 'Getting Started', url: '/docs/getting-started/' },
+{ name: 'What is GASNet?', url: '/docs/getting-started/intro' }
+]} />
+
 GASNet (Global Address Space Networking) is a language-agnostic networking layer
 used by PGAS languages and runtime systems to deliver low-latency, high-throughput
 communication on modern supercomputers. Gasnet.org turns the practical and
