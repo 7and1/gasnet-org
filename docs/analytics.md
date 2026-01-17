@@ -163,4 +163,4 @@ If you prefer an even simpler approach, consider:
 
 - [Umami Documentation](https://umami.is/docs)
 - [GDPR Compliance Guide](https://umami.is/docs/gdpr-compliance)
-- [Privacy Policy](/docs/operations/privacy)
+- [Privacy Policy](/docs/privacy)
